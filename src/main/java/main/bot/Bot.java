@@ -13,73 +13,81 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Component
 public class Bot extends TelegramLongPollingBot {
 
-    @Value("${bot.name}")
-    private String botName;
+  @Value("${bot.name}")
+  private String BOT_NAME;
 
-    @Value("${bot.token}")
-    private String botToken;
+  @Value("${bot.token}")
+  private String BOT_TOKEN;
 
-    private final ManagerBotService managerBotService;
+  private final String START_COMMAND = "/start";
 
-    @Autowired
-    public Bot(ManagerBotService managerBotService) {
-        this.managerBotService = managerBotService;
-    }
+  private final String LK_COMMAND = "/lk";
 
-    @Override
-    public String getBotUsername() {
-        return botName;
-    }
+  private final ManagerBotService managerBotService;
 
-    @Override
-    public String getBotToken() {
-        return botToken;
-    }
+  @Autowired
+  public Bot(ManagerBotService managerBotService) {
+    this.managerBotService = managerBotService;
+  }
 
-    @Override
-    public void onUpdateReceived(Update update) {
+  @Override
+  public String getBotUsername() {
+    return BOT_NAME;
+  }
 
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            String userName = update.getMessage().getFrom().getUserName();
-            String firstName = update.getMessage().getFrom().getFirstName();
-            String lastName = update.getMessage().getFrom().getLastName();
-            Long chatId = update.getMessage().getChatId();
+  @Override
+  public String getBotToken() {
+    return BOT_TOKEN;
+  }
 
-            String textUpdate = update.getMessage().getText();
-            switch (textUpdate) {
-                case "/start" : {
-                    SendMessage message = new SendMessage();
-                    message.setChatId(update.getMessage().getChatId().toString());
-                    message.setText(firstName + ", Привет!");
-                    if(userName != null){
-                        managerBotService.saveUser(userName);
-                    } else {
-                        managerBotService.saveUser(firstName, lastName);
-                    }
-                    sendMessage(message);
-                    break;
-                }
+  @Override
+  public void onUpdateReceived(Update update) {
 
-                case "/lk" : {
-                    SendMessage message = new SendMessage();
-                    message.setChatId(update.getMessage().getChatId().toString());
-                    message.setText("");
-                    sendMessage(message);
-                    break;
-                }
-            };
+    if (update.hasMessage() && update.getMessage().hasText()) {
+      String userName = update.getMessage().getFrom().getUserName();
+      String firstName = update.getMessage().getFrom().getFirstName();
+      String lastName = update.getMessage().getFrom().getLastName();
+      Long chatId = update.getMessage().getChatId();
+
+      String textUpdate = update.getMessage().getText();
+      switch (textUpdate) {
+        case START_COMMAND: {
+          SendMessage message = new SendMessage();
+          message.setChatId(update.getMessage().getChatId().toString());
+          message.setText(firstName + ", Привет!");
+          if (userName != null) {
+            managerBotService.saveUser(userName, chatId);
+          } else {
+            managerBotService.saveUser(firstName, lastName, chatId);
+          }
+          sendMessage(message);
+          break;
         }
 
-    }
-
-    private void sendMessage(SendMessage message){
-        try {
-            execute(message);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
+        case LK_COMMAND: {
+          StringBuilder textBuilder = new StringBuilder();
+          SendMessage message = new SendMessage();
+          message.setChatId(update.getMessage().getChatId().toString());
+          textBuilder.append("Ваше имя: ").append(userName != null ? userName : firstName);
+          textBuilder.append("\n");
+          textBuilder.append("Ваш уникальный ID: ").append(chatId);
+          message.setText(textBuilder.toString());
+          sendMessage(message);
+          break;
         }
+      }
+      ;
     }
 
+  }
+
+  private void sendMessage(SendMessage message) {
+    try {
+      execute(message);
+    } catch (TelegramApiException e) {
+      e.printStackTrace();
+    }
+  }
 
 
 }

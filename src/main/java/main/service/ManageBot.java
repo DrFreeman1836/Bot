@@ -3,20 +3,22 @@ package main.service;
 
 public interface ManageBot {
 
-    /**
-     * сохранить нового пользователя
-     *
-     * @param userName
-     */
-    void saveUser(String userName);
+  /**
+   * сохранить нового пользователя
+   *
+   * @param userName
+   * @param chatId
+   */
+  void saveUser(String userName, Long chatId);
 
-    /**
-     * сохранить нового пользователя
-     *
-     * @param firstName
-     * @param lastNAme
-     */
-    void saveUser(String firstName, String lastNAme);
+  /**
+   * сохранить нового пользователя
+   *
+   * @param firstName
+   * @param lastName
+   * @param chatId
+   */
+  void saveUser(String firstName, String lastName, Long chatId);
 
 
 }

@@ -10,20 +10,22 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class ManagerBotService implements ManageBot {
 
-    private final UserRepository userRepository;
+  private final UserRepository userRepository;
 
-    @Override
-    public void saveUser(String userName) {
-        userRepository.save(User.builder()
-                .userName(userName)
-                .build());
-    }
+  @Override
+  public void saveUser(String userName, Long chatId) {
+    userRepository.save(User.builder()
+        .userName(userName)
+        .chatId(chatId)
+        .build());
+  }
 
-    @Override
-    public void saveUser(String firstName, String lastNAme) {
-        userRepository.save(User.builder()
-                .firstName(firstName)
-                .lastName(lastNAme)
-                .build());
-    }
+  @Override
+  public void saveUser(String firstName, String lastNAme, Long chatId) {
+    userRepository.save(User.builder()
+        .firstName(firstName)
+        .lastName(lastNAme)
+        .chatId(chatId)
+        .build());
+  }
 }
