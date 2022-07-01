@@ -3,12 +3,12 @@ package main.service.impl;
 import lombok.AllArgsConstructor;
 import main.model.User;
 import main.repository.UserRepository;
-import main.service.ManageBot;
+import main.service.ManageUser;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class ManagerBotService implements ManageBot {
+public class ManagerUserService implements ManageUser {
 
   private final UserRepository userRepository;
 

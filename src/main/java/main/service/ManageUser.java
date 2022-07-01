@@ -1,7 +1,7 @@
 package main.service;
 
 
-public interface ManageBot {
+public interface ManageUser {
 
   /**
    * сохранить нового пользователя
