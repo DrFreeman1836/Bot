@@ -4,9 +4,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-public abstract class Command extends Bot {
+public abstract class Command {
 
     private final String command;
 
@@ -14,25 +13,16 @@ public abstract class Command extends Bot {
         this.command = command;
     }
 
-    @Override
-    public void onUpdateReceived(Update update){
+    public SendMessage commandHandler(Update update){
 
         if(update.getMessage().getText().equals(command)){
-            responseToCommand(update.getMessage(),
-                    update.getMessage().getFrom());
+            return responseToCommand(update.getMessage(), update.getMessage().getFrom());
         }
-
+        return  null;
     }
 
-    abstract protected void responseToCommand(Message message, User user);
+    abstract protected SendMessage responseToCommand(Message message, User user);
 
-    protected void sendMessage(SendMessage message) {
-        try {
-            execute(message);
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
-    }
 
 
 }
