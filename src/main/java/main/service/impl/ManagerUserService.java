@@ -12,7 +12,13 @@ public class ManagerUserService implements ManageUser {
 
   private final UserRepository userRepository;
 
-
+  public void addUser(String userName, String firstName, String lastName, Long chatId) {
+    if(userName != null){
+      saveUser(userName, chatId);
+    } else {
+      saveUser(firstName, lastName, chatId);
+    }
+  }
 
   @Override
   public void saveUser(String userName, Long chatId) {

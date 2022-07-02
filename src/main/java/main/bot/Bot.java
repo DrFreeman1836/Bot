@@ -1,5 +1,6 @@
 package main.bot;
 
+import main.bot.impl.LKCommand;
 import main.bot.impl.StartCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,10 +20,13 @@ public class Bot extends TelegramLongPollingBot {
   @Value("${bot.token}")
   private String BOT_TOKEN;
 
-  private final StartCommand start;
+  private StartCommand start;
+
+  private LKCommand lk;
 
   @Autowired
-  public Bot(StartCommand start) {
+  public Bot(StartCommand start, LKCommand lk) {
+    this.lk = lk;
     this.start = start;
   }
 
@@ -39,13 +43,12 @@ public class Bot extends TelegramLongPollingBot {
   @Override
   public void onUpdateReceived(Update update) {
 
+    sendMessage(lk.commandHandler(update));
     sendMessage(start.commandHandler(update));
 
   }
 
-
-
-  private void sendMessage(SendMessage message) {
+  public void sendMessage(SendMessage message) {
     if(message == null) return;
     try {
       execute(message);

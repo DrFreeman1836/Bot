@@ -1,7 +1,8 @@
 package main.bot.impl;
 
 import main.bot.Command;
-import org.springframework.stereotype.Component;
+import main.service.impl.ManagerUserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -10,22 +11,31 @@ import org.telegram.telegrambots.meta.api.objects.User;
 @Service
 public class StartCommand extends Command {
 
-//    @Autowired
-//    private final ManagerBotService managerBotService;
+  private ManagerUserService managerUserService;
 
-    public StartCommand() {
-        super("/start");
-    }
+  private SendMessage sendMessage = new SendMessage();
 
-    @Override
-    protected SendMessage responseToCommand(Message message, User user) {
+  public StartCommand() {
+    super("/start");
+  }
 
-        SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(message.getChatId().toString());
-        sendMessage.setText(user.getFirstName() + ", Привет!");
+  @Autowired
+  public void setManagerUserService(ManagerUserService managerUserService) {
+    this.managerUserService = managerUserService;
+  }
 
-        return sendMessage;
-    }
+  @Override
+  protected SendMessage responseToCommand(Message message, User user) {
+
+    managerUserService.addUser(user.getUserName(), user.getFirstName(),
+        user.getLastName(), message.getChatId());
+
+    sendMessage.setChatId(message.getChatId().toString());
+    sendMessage.setText(user.getFirstName() + ", Привет!");
+
+    return sendMessage;
+  }
+
 
 
 }
