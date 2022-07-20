@@ -43,8 +43,8 @@ public class Bot extends TelegramLongPollingBot {
   @Override
   public void onUpdateReceived(Update update) {
 
-    sendMessage(lk.commandHandler(update));
-    sendMessage(start.commandHandler(update));
+    lk.commandHandler(update);
+    start.commandHandler(update);
 
   }
 
